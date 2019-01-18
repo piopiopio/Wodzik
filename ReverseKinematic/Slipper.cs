@@ -53,7 +53,7 @@ namespace ReverseKinematic
             }
         }
 
-        private double _epsilon = 1;
+        private double _epsilon = 0;
         public double Epsilon
         {
             get { return _epsilon; }
@@ -286,7 +286,7 @@ namespace ReverseKinematic
 
             if (CentralMRS)
             {
-                _position.Add(new DataPoint(time / 1000, _x - 2 * r));
+                _position.Add(new DataPoint(time / 1000, _x- l));
                 if (_position.Count > 3)
                 {
                     _velocity.Add(new DataPoint(_position[_position.Count - 2].X,
@@ -310,7 +310,7 @@ namespace ReverseKinematic
             }
             else
             {
-                _position.Add(new DataPoint(time / 1000, _x - 2 * r));
+                _position.Add(new DataPoint(time / 1000, _x-l));
                 if (_position.Count > 2)
                 {
                     _velocity.Add(new DataPoint(_position[_position.Count - 1].X,

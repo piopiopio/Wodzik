@@ -83,8 +83,8 @@
             <Label Grid.Row="5" Content="Epsilon:"></Label>
             <TextBox Grid.Row="5" Grid.Column="1" Name="Epsilon" Text="{Binding Scene.Slipper1.Epsilon}"></TextBox>
 
-            <Label Grid.Row="6" Content="CentralMRS:"></Label>
-            <CheckBox Grid.Row="6" Grid.Column="1" Name="CentralMRS" IsChecked="{Binding Scene.Slipper1.CentralMRS}"></CheckBox>
+            <!--<Label Grid.Row="6" Content="CentralMRS:"></Label>
+            <CheckBox Grid.Row="6" Grid.Column="1" Name="CentralMRS" IsChecked="{Binding Scene.Slipper1.CentralMRS}"></CheckBox>-->
 
 
             <oxy:Plot Name="PositionGraph" Grid.Row="8"  Height="400"  Width="400" Title="Position" LegendMaxHeight="300">
