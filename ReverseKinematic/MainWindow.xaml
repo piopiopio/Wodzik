@@ -1,0 +1,208 @@
+﻿<Window x:Class="ReverseKinematic.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ReverseKinematic" 
+        xmlns:system="clr-namespace:System;assembly=mscorlib"
+        xmlns:oxy="http://oxyplot.org/wpf"
+        mc:Ignorable="d"
+        Title="Inverse kinematics" Name="MainWindow1" WindowState="Maximized" SizeChanged="MainWindow_OnSizeChanged"  PreviewKeyDown="OnPrievewKeyDown" MinWidth="900" d:DesignHeight="917.5">
+
+    <Window.Resources>
+        <local:BaseConverter x:Key="BaseConverter"/>
+        <local:BoolToVisibleOrHidden x:Key="BoolToVisibleOrHidden"/>
+        <system:Double x:Key="SmallEllipseMoveToCenter">15</system:Double>
+    </Window.Resources>
+   
+
+
+    <Grid Name="MainGrid">
+        <Grid.ColumnDefinitions>
+      
+            <ColumnDefinition Width="9*"/>
+            <ColumnDefinition Width="7*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <Grid  Grid.Column="1" Grid.Row="0" >
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <Grid  Grid.Row="0" Grid.ColumnSpan="10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Button Grid.Row="0" Grid.Column="2"  Content="Start animation" Name="StartAnimation" Click="StartAnimation_OnClick"></Button>
+                <Button Grid.Row="0" Grid.Column="3"  Content="Stop animation" Name="StopAnimation" Click="StopAnimation_OnClick" IsEnabled="False"></Button>
+            </Grid>
+
+
+      
+
+            <Label Grid.Row="1" Content="Animation time [s]:"></Label>
+            <TextBox Grid.Row="1" Grid.Column="1" Name="AnimationLength" Text="{Binding Scene.SimulationTime}"></TextBox>
+
+            <Label Grid.Row="2" Content="L:"></Label>
+            <TextBox Grid.Row="2" Grid.Column="1" Name="L" Text="{Binding Scene.Slipper1.L}"></TextBox>
+
+            <Label Grid.Row="3" Content="R:"></Label>
+            <TextBox Grid.Row="3" Grid.Column="1" Name="R" Text="{Binding Scene.Slipper1.R}"></TextBox>
+
+            <Label Grid.Row="4" Content="Omega:"></Label>
+            <TextBox Grid.Row="4" Grid.Column="1" Name="Omega" Text="{Binding Scene.Slipper1.Omega}"></TextBox>
+
+            <Label Grid.Row="5" Content="Epsilon:"></Label>
+            <TextBox Grid.Row="5" Grid.Column="1" Name="Epsilon" Text="{Binding Scene.Slipper1.Epsilon}"></TextBox>
+
+            <Label Grid.Row="6" Content="CentralMRS:"></Label>
+            <CheckBox Grid.Row="6" Grid.Column="1" Name="CentralMRS" IsChecked="{Binding Scene.Slipper1.CentralMRS}"></CheckBox>
+
+
+            <oxy:Plot Name="PositionGraph" Grid.Row="8"  Height="400"  Width="400" Title="Position" LegendMaxHeight="300">
+                <oxy:Plot.Series >
+                    <oxy:LineSeries ItemsSource="{Binding Scene.Slipper1.Position}" />
+                </oxy:Plot.Series>
+            </oxy:Plot>
+
+            <oxy:Plot Name="VelocityGraph" Grid.Row="8" Grid.Column="1" Height="400"  Width="400"  Title="Velocity" LegendMaxHeight="300">
+                <oxy:Plot.Series >
+                    <oxy:LineSeries ItemsSource="{Binding Scene.Slipper1.Velocity}" />
+                </oxy:Plot.Series>
+            </oxy:Plot>
+
+            <oxy:Plot Name="AccelerationGraph" Grid.Row="9"  Height="400"  Width="400"  Title="Acceleration" LegendMaxHeight="300">
+                <oxy:Plot.Series >
+                    <oxy:LineSeries ItemsSource="{Binding Scene.Slipper1.Acceleration}" />
+                </oxy:Plot.Series>
+            </oxy:Plot>
+
+            <oxy:Plot Name="PhaseGraph" Grid.Row="9" Grid.Column="1"  Height="400"  Width="400" Title="Phase" LegendMaxHeight="300">
+                <oxy:Plot.Series >
+                    <oxy:LineSeries ItemsSource="{Binding Scene.Slipper1.Phase}" />
+                </oxy:Plot.Series>
+            </oxy:Plot>
+
+            <Label Grid.Row="10" Content="Buffor length:"></Label>
+            <Slider  Name="SampleQuantity" Grid.Row="10" Grid.Column="1" Minimum="0" Maximum="1000" Value="{Binding Scene.Slipper1.SampleQuantity }"></Slider>
+        </Grid>
+
+        <DockPanel Grid.Column="0" Grid.Row="0" >
+
+
+
+            <Viewbox Name="MainViewbox" Stretch="Uniform"  HorizontalAlignment="Stretch" VerticalAlignment="Stretch" >
+
+                <Grid>
+
+
+                    <Canvas Background="AliceBlue" Name="RobotCanvas" Width="1000" Height="1000" MouseRightButtonDown="MainCanvas_OnRightMouseDown" MouseLeftButtonUp="MainCanvas_OnLeftMouseUp" MouseMove="MainCanvas_OnMouseMove" MouseRightButtonUp="MainCanvas_OnMouseRightButtonUp">
+
+
+
+                        <Ellipse Name ="DriveWheel"  Width="{Binding Scene.Slipper1.D}" Height="{Binding Scene.Slipper1.D}" Canvas.Left="{Binding Scene.Slipper1.pulleyX}"    Canvas.Top="{Binding Scene.Slipper1.pulleyX}" Stroke="Chartreuse" StrokeThickness="3" >
+
+                            <Ellipse.Fill>
+
+                                <SolidColorBrush Color="Chartreuse" Opacity="0.1"></SolidColorBrush>
+                            </Ellipse.Fill>
+                        </Ellipse>
+                        <Line X1="{Binding Scene.Slipper1.PivotX1}" Y1="{Binding Scene.Slipper1.PivotY1}" X2="{Binding Scene.Slipper1.LineX2}" Y2="{Binding Scene.Slipper1.LineY2}" Stroke="Black" StrokeThickness="5" ></Line>
+                        <Line X1="{Binding Scene.Slipper1.PivotX1}" Y1="{Binding Scene.Slipper1.PivotY1}" X2="{Binding Scene.Slipper1.X}" Y2="{Binding Scene.Slipper1.Y}" Stroke="Black" StrokeThickness="5" ></Line>
+                        <Rectangle  Canvas.Left="{Binding Scene.Slipper1.X}" Canvas.Top="{Binding Scene.Slipper1.PistonY}" Width="60" Height="30"  Stroke="Black" StrokeThickness="5" ></Rectangle>
+
+
+
+<!--<Ellipse Name ="WorkingAreaInternalBoundary"  Width="{Binding Scene.Robot1.Slipper1.R}" Height="{Binding Scene.Robot1.Slipper1.R}" Canvas.Left="{Binding Scene.Robot1.InternalBoundaryRadius.X}"   Canvas.Top="{Binding Scene.Robot1.InternalBoundaryRadius.Y}" Stroke="Chartreuse" StrokeThickness="3" Fill="AliceBlue"/>-->
+
+                        <!--<Ellipse Name ="TargetEllipse"  Width="30" Height="30"  Canvas.Left="{Binding Scene.EndPosition.X, Converter={StaticResource BaseConverter},
+                                     ConverterParameter={StaticResource SmallEllipseMoveToCenter}}"   Canvas.Top="{Binding Scene.EndPosition.Y, Converter={StaticResource BaseConverter},ConverterParameter={StaticResource SmallEllipseMoveToCenter}}" >
+                            <Ellipse.Fill>
+                                <ImageBrush ImageSource="Resources/f1.png"></ImageBrush>
+                            </Ellipse.Fill>
+                        </Ellipse>
+
+                        <Ellipse Name ="StartEllipse"  Width="30" Height="30" Canvas.Left="{Binding Scene.StartPosition.X, Converter={StaticResource BaseConverter},
+                                     ConverterParameter={StaticResource SmallEllipseMoveToCenter}}"   Canvas.Top="{Binding Scene.StartPosition.Y, Converter={StaticResource BaseConverter},ConverterParameter={StaticResource SmallEllipseMoveToCenter}}" >
+                            <Ellipse.Fill>
+                                <ImageBrush ImageSource="Resources/start1.jpg"></ImageBrush>
+                            </Ellipse.Fill>
+                        </Ellipse>-->
+               <!--<Ellipse.Fill>
+                            <ImageBrush ImageSource="Resources/start1.jpg"></ImageBrush>
+                        </Ellipse.Fill>-->
+                        <!--</Ellipse>-->
+
+                        <!--<Line X1="{Binding Scene.Robot2.Point0.X}" Y1="{Binding Scene.Robot2.Point0.Y}" X2="{Binding Scene.Robot2.Point1.X}" Y2="{Binding Scene.Robot2.Point1.Y}" Stroke="Black" StrokeThickness="5"></Line>
+                        <Line X1="{Binding Scene.Robot2.Point1.X}" Y1="{Binding Scene.Robot2.Point1.Y}" X2="{Binding Scene.Robot2.Point2.X}" Y2="{Binding Scene.Robot2.Point2.Y}" Stroke="Black" StrokeThickness="5"></Line>-->
+
+
+                    </Canvas >
+                    <ItemsControl ItemsSource="{Binding Scene.ObstaclesCollection}" >
+                        <ItemsControl.ItemContainerStyle >
+                            <Style TargetType="ContentPresenter">
+
+                                <Setter Property="Canvas.Left" Value ="{Binding From.X}"/>
+                                <Setter Property="Canvas.Top" Value ="{Binding From.Y}"/>
+                            </Style>
+                        </ItemsControl.ItemContainerStyle>
+                        <ItemsControl.ItemsPanel >
+                            <ItemsPanelTemplate>
+
+                                <Canvas Name="MainCanvas"  Width="1000" Height="1000" MouseRightButtonDown="MainCanvas_OnRightMouseDown" MouseLeftButtonUp="MainCanvas_OnLeftMouseUp" MouseMove="MainCanvas_OnMouseMove" MouseRightButtonUp="MainCanvas_OnMouseRightButtonUp">
+
+                                </Canvas >
+
+
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Rectangle Width="{Binding Size.X}" Height="{Binding Size.Y}" Fill="{Binding Color}"/>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </Grid>
+            </Viewbox>
+
+            <!--<Viewbox  Name="RobotViewBox" Stretch="Uniform"  HorizontalAlignment="Stretch" VerticalAlignment="Stretch" >-->
+
+            <!--</Viewbox>-->
+
+
+        </DockPanel>
+
+    </Grid>
+
+
+
+</Window>
